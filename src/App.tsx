@@ -280,11 +280,11 @@ function App() {
           <aside ref={explorerRef} id="portfolio-explorer" className={`sidebar ${drawerOpen ? 'is-open' : ''}`} aria-label="Portfolio file explorer"
             role={drawerOpen ? 'dialog' : undefined} aria-modal={drawerOpen ? true : undefined}
             inert={paletteOpen || (compact && !drawerOpen)}>
-           <div className="sidebar-heading">
+            <div className="sidebar-heading">
               <span className="eyebrow">workspace</span>
               <span className="live-dot" aria-label="online" />
               <button className="explorer-close" type="button" onClick={() => setExplorerOpen(false)}>Close files</button>
-           </div>
+            </div>
             <div className="sidebar-tree-scroll">
               <div className={`tree-root ${activePath === '' ? 'is-current' : ''}`}><span aria-hidden="true">▾</span> {fileTree.label}/</div>
               <div className="cwd-display"><span>cwd</span><strong>~/{activePath}</strong></div>
@@ -297,14 +297,14 @@ function App() {
           </aside>
 
           <section className="terminal-content" inert={drawerOpen || paletteOpen}>
-             <div className="breadcrumb"><span>~/</span>{activePath}</div>
-             <div className="view-stage" tabIndex={0} aria-label="Portfolio content">
-               {activeView === 'home' ? (
-                 <HomeScreen />
-               ) : (
-              <DetailScreen item={activeItem} activePath={activePath} onBack={() => { setActiveView('home'); setActivePath(''); setSelectedPath('') }} />
-               )}
-             </div>
+            <div className="breadcrumb"><span>~/</span>{activePath}</div>
+            <div className="view-stage" tabIndex={0} aria-label="Portfolio content">
+              {activeView === 'home' ? (
+                <HomeScreen />
+              ) : (
+                <DetailScreen item={activeItem} activePath={activePath} onBack={() => { setActiveView('home'); setActivePath(''); setSelectedPath('') }} />
+              )}
+            </div>
             <div className="terminal-dock">
               <WorkspaceCommandBar onRunCommand={runCommand} />
               {notice && <div className="terminal-notice" role="log" aria-live="polite" tabIndex={0} aria-label="Workspace command output"><span aria-hidden="true">›</span>{notice}</div>}
@@ -313,14 +313,14 @@ function App() {
         </div>
         <footer className="terminal-footer" inert={drawerOpen || paletteOpen}>
           <details className="shortcut-help" open={!compact}>
-          <summary>Keyboard shortcuts</summary>
-          <div className="footer-shortcuts">
-            <span className="footer-shortcut"><kbd>↑</kbd><kbd>↓</kbd> Move selection</span>
-            <span className="footer-shortcut"><kbd>Enter</kbd> Open selected item</span>
-            <span className="footer-shortcut"><kbd>Esc</kbd> Go back / Close menu</span>
-            <span className="footer-shortcut"><kbd>/</kbd> Open command palette</span>
-            <span className="footer-shortcut"><kbd>Tab</kbd> Move to next area</span>
-          </div>
+            <summary>Keyboard shortcuts</summary>
+            <div className="footer-shortcuts">
+              <span className="footer-shortcut"><kbd>↑</kbd><kbd>↓</kbd> Move selection</span>
+              <span className="footer-shortcut"><kbd>Enter</kbd> Open selected item</span>
+              <span className="footer-shortcut"><kbd>Esc</kbd> Go back / Close menu</span>
+              <span className="footer-shortcut"><kbd>/</kbd> Open command palette</span>
+              <span className="footer-shortcut"><kbd>Tab</kbd> Move to next area</span>
+            </div>
           </details>
           <span className="footer-right">build 01 <span aria-hidden="true">·</span> no tracking</span>
         </footer>
@@ -443,11 +443,11 @@ function AboutPanel() {
     <div className="about-panel">
       <TerminalHeading>{identity.name}</TerminalHeading>
       <p className="about-copy">{identity.about}</p>
-      <div className="about-facts" aria-label="About Muneeb">
+      {/* <div className="about-facts" aria-label="About Muneeb">
         <div><span>focus</span><strong>Mathematics · problem-solving · learning</strong></div>
         <div><span>study</span><strong>Computer Science · IIT (ISM) Dhanbad</strong></div>
         <div><span>outside code</span><strong>Guitar · music</strong></div>
-      </div>
+      </div> */}
       <p className="about-navigation-hint">Browse Projects, Skills, Resume, and Contact with the explorer, command line, or <kbd>/</kbd> palette.</p>
     </div>
   )
