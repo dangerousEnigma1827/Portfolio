@@ -4,7 +4,7 @@ export const identity = {
   name: 'Muneeb',
   systemName: 'dangerousEnigma.sys',
   tagline: 'I love solving problems, exploring the beauty of mathematics, and constantly learning new things.',
-  about: "I'm a Computer Science student at IIT (ISM) Dhanbad who enjoys mathematics, problem-solving, and exploring how things work. I like learning new technologies, and outside coding, I enjoy playing the guitar and listening to music.",
+  about: "I'm a Computer Science student at IIT (ISM) Dhanbad who enjoys mathematics, problem-solving, and exploring how things work. I like learning new technologies, and outside coding, I enjoy playing the guitar and listening to music. (Already taken by Vanshika Upadhyay!!)",
 }
 
 export const skillCategories: SkillCategory[] = [
