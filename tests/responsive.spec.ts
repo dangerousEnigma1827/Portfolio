@@ -40,6 +40,13 @@ test('entry, shared explorer, projects, terminal, palette and touch layout', asy
   page.on('pageerror', (error) => errors.push(error.message))
   await page.goto('/')
   await page.evaluate(() => document.fonts.ready)
+  const boot = page.locator('.boot-screen')
+  await expect(boot).toBeVisible()
+  await expect(boot).toContainText('dangerousEnigma BIOS v1.0')
+  await expect(boot).toContainText('Initializing environment...')
+  await expect(boot).toContainText('Loading portfolio...')
+  await expect(boot).toContainText('[ OK ] Ready.')
+  await expect(boot).toBeHidden()
   await expect(page.locator('.entry-screen')).toBeVisible()
   await expect(page.getByText('dangerousEnigma.sys')).toBeVisible()
   await expect(page.locator('.entry-command-hint')).toContainText('cd portfolio')
@@ -50,6 +57,13 @@ test('entry, shared explorer, projects, terminal, palette and touch layout', asy
   await expect(page.locator('.detail-screen h2')).toHaveText(/Muneeb/)
   await expect(page.getByText(/Computer Science student at IIT/)).toBeVisible()
   await expect(page.getByText('dangerousEnigma.sys')).toBeVisible()
+  await page.reload()
+  await expect(page.locator('.boot-screen')).toBeHidden()
+  await expect(page.locator('.entry-screen')).toBeVisible()
+  const reloadedEntry = page.getByRole('textbox', { name: /Enter a safe portfolio command/ })
+  await reloadedEntry.fill('cd portfolio')
+  await reloadedEntry.press('Enter')
+  await expect(page.locator('.terminal-window')).toBeVisible()
   await page.mouse.move(20, 20)
   const cursorCapabilities = await page.evaluate(() => ({
     pointerFine: matchMedia('(hover: hover) and (pointer: fine)').matches,
@@ -221,4 +235,20 @@ test('entry, shared explorer, projects, terminal, palette and touch layout', asy
   await expect(palette).toBeHidden()
   await expect(page.getByRole('button', { name: 'Open command palette' })).toBeVisible()
   expect(errors).toEqual([])
+})
+
+test('boot can be skipped without executing an entry command', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('.boot-screen')).toBeVisible()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('.boot-screen')).toBeHidden()
+  await expect(page.locator('.entry-screen')).toBeVisible()
+  await expect(page.locator('.terminal-window')).toBeHidden()
+})
+
+test('reduced motion avoids a delayed or blank startup', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await expect(page.locator('.entry-screen')).toBeVisible()
+  await expect(page.locator('.terminal-window')).toBeHidden()
 })

@@ -17,6 +17,7 @@
   display: grid;
   place-items: center;
   background: #000000;
+  animation: entry-reveal .28s ease-out both;
 }
 
 .entry-noise {
@@ -221,12 +222,12 @@ h1 span { color: var(--text); }
 .tech-icon-c { color: #659ad2; }.tech-icon-cplusplus { color: #00599c; }.tech-icon-python { color: #3776ab; }.tech-icon-javascript { color: #f7df1e; }.tech-icon-typescript { color: #3178c6; }.tech-icon-react { color: #61dafb; }.tech-icon-nextjs { color: #f0f3ef; }.tech-icon-tailwind-css { color: #38bdf8; }.tech-icon-nodejs { color: #68a063; }.tech-icon-expressjs { color: #f0f3ef; }.tech-icon-websockets { color: #a78bfa; }.tech-icon-redis { color: #dc382d; }.tech-icon-mongodb { color: #47a248; }.tech-icon-linux { color: #f0b90b; }
 
 /* Boot and palette */
-.boot-screen { position: fixed; top: var(--app-top, 0px); display: grid; grid-template-columns: 52px minmax(0, 420px); align-content: center; align-items: start; gap: 20px; width: 100%; height: var(--app-height, 100dvh); padding: 24px; overflow-y: auto; color: var(--text); background: var(--bg); }
-.boot-mark { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid var(--muted); color: var(--mint); font-family: var(--font-pixel); font-size: 12px; }
-.boot-label { margin-bottom: 20px; color: var(--muted); font-size: 9px; letter-spacing: .12em; }
-.boot-lines { min-height: 115px; color: var(--muted); font-size: 10px; line-height: 2; }
-.prompt-symbol { color: var(--mint); }
-.boot-cursor-line { height: 17px; }
+.boot-screen { position: fixed; top: var(--app-top, 0px); display: grid; place-items: center; width: 100%; height: var(--app-height, 100dvh); padding: 24px; overflow-y: auto; color: var(--mint-strong); background: var(--bg); animation: boot-reveal .24s ease-out both; }
+.boot-terminal { width: min(520px, 100%); font-family: var(--font-mono); }
+.boot-lines { min-height: 116px; color: var(--mint-strong); font-size: 13px; line-height: 1.9; }
+.boot-lines p { margin: 0; }
+.boot-cursor-line { height: 19px; }
+.boot-cursor-line .cursor-block { width: 7px; height: 15px; }
 .boot-skip { margin-top: 22px; }
 .text-button { padding: 0; border: 0; color: var(--subtle); background: transparent; font-size: 9px; }
 .text-button:hover { color: var(--text); }
@@ -253,6 +254,8 @@ h1 span { color: var(--text); }
 .palette-footer span { display: inline-flex; align-items: center; gap: 3px; }
 
 @keyframes blink { 50% { opacity: 0; } }
+@keyframes boot-reveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes entry-reveal { from { opacity: 0; } to { opacity: 1; } }
 @keyframes indicator-flicker { 0%, 88%, 100% { opacity: 1; } 90% { opacity: .55; } 92% { opacity: .9; } 94% { opacity: .48; } }
 
 /* Controls remain readable and tappable; only the layout changes at breakpoints. */
