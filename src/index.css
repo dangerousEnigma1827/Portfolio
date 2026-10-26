@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+  color: #f0f3ef;
+  background: #000000;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --bg: #000000;
+  --surface: #050705;
+  --surface-raised: #080b08;
+  --surface-soft: #101610;
+  --line: rgba(166, 184, 169, .2);
+  --line-strong: rgba(194, 214, 196, .38);
+  --tree-line: rgba(166, 174, 167, .32);
+  --text: #f0f3ef;
+  --muted: #a2aaa3;
+  --subtle: #6f786f;
+  --mint: #9cffb6;
+  --mint-strong: #62e985;
+  --mint-wash: rgba(98, 233, 133, .12);
+  --green-solid: #65e989;
+  --green-deep: #12351d;
+  --green-hover: #193e24;
+  --cyan: #9cffb6;
+  --cyan-wash: rgba(98, 233, 133, .12);
+  --violet: #a8b1a8;
+  --violet-wash: rgba(98, 109, 98, .12);
+  --amber: #b8c2b8;
+  --coral: #d8a19a;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+
+html { height: 100%; background: var(--bg); }
+
+body { margin: 0; height: 100%; background: var(--bg); }
+
+button, input { font: inherit; }
+button, summary { touch-action: manipulation; }
+img, svg { max-width: 100%; }
+input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-select: text; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--mint); outline-offset: -2px; }
+
+::selection { color: #000000; background: var(--green-solid); }
