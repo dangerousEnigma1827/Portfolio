@@ -4,7 +4,7 @@ export const identity = {
   name: 'Muneeb',
   systemName: 'dangerousEnigma.sys',
   tagline: 'I love solving problems, exploring the beauty of mathematics, and constantly learning new things.',
-  about: "I'm a Computer Science student at IIT (ISM) Dhanbad who enjoys mathematics, problem-solving, and exploring how things work. I like learning new technologies, and outside coding, I enjoy playing the guitar and listening to music. (Already taken by Vanshika Upadhyay!!)",
+  about: "I'm a Computer Science student at IIT (ISM) Dhanbad who enjoys mathematics, problem-solving, and exploring how things work. I like learning new technologies, and outside coding, I enjoy playing the guitar and listening to music.",
 }
 
 export const skillCategories: SkillCategory[] = [
@@ -18,13 +18,18 @@ export const skillCategories: SkillCategory[] = [
 export const projectDetails: Record<ProjectKey, ProjectDetailConfig> = {
   dairix: {
     title: 'DAIRIX',
-    imageSource: undefined,
+    imageSource: `${import.meta.env.BASE_URL}dairix.png`,
     description: 'A dairy management platform designed to streamline customer subscriptions, recurring deliveries, and delivery operations through a unified system.',
   },
   smarttrace: {
     title: 'SMARTTRACE',
-    imageSource: undefined,
+    imageSource: `${import.meta.env.BASE_URL}smarttrace.png`,
     description: 'A pharmaceutical anti-counterfeit and traceability platform designed to verify product authenticity and detect duplicate or tampered serializations.',
+  },
+  novasync: {
+    title: 'NOVASYNC',
+    imageSource: `${import.meta.env.BASE_URL}novasync.png`,
+    description: 'An expense splitting platform that helps groups track shared spending, split costs, and automatically compute the minimal number of transactions needed to balance debts.',
   },
 }
 
@@ -34,6 +39,9 @@ export const projectDocumentation: Record<ProjectKey, { readme: string }> = {
   },
   smarttrace: {
     readme: `SmartTrace addresses the pharmaceutical authentication and traceability problem: products need a reliable way to be verified as they move through packaging and distribution.\n\nIt is a team project focused on verifying product authenticity and detecting duplicate or tampered serializations.\n\nTechnical overview:\n\n- Unique serial identifiers with check-digit validation.\n- Unit → Carton → Pallet packaging hierarchy.\n- SHA-256 fingerprint generation and comparison.\n- Duplicate and tampering detection.`,
+  },
+  novasync: {
+    readme: `NovaSync is an expense splitting platform that helps groups track shared spending, split costs, and settle balances efficiently.\n\nIt features an algorithmic debt simplification engine that computes the minimum number of cash transfers required to balance debts across all members.\n\nKey features and technical overview:\n\n- Group expense tracking and automated cost splitting.\n- Minimal cash-flow algorithm to reduce total repayment transactions.\n- Real-time balance calculations and settlement history.\n- Responsive interface for group expense management.`,
   },
 }
 
@@ -46,5 +54,5 @@ export const contacts: ContactLink[] = [
 
 export const resumeConfig = {
   label: 'Download Resume',
-  href: undefined as string | undefined,
+  href: 'https://drive.google.com/drive/folders/1hqVxV-c_J_UU1qGBtN0P00X4yLdZ31z7?usp=sharing' as string | undefined,
 }

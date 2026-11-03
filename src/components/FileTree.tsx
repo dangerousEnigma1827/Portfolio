@@ -40,6 +40,7 @@ function fileIcon(path: string) {
   if (path.endsWith('.json')) return { glyph: '{}', kind: 'json' }
   if (path.endsWith('.pdf')) return { glyph: '▧', kind: 'pdf' }
   if (path.endsWith('.md')) return { glyph: 'M', kind: 'markdown' }
+  if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.svg')) return { glyph: '▣', kind: 'image' }
   return { glyph: '·', kind: 'generic' }
 }
 

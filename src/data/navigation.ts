@@ -6,16 +6,21 @@ export { projectDetails }
 export const navigationItems: NavigationItem[] = [
   { id: 'home', label: 'Terminal home', path: '~', description: 'Return to the command center.', eyebrow: 'session / home' },
   { id: 'about', label: 'About', path: 'about/README.md', description: identity.tagline, eyebrow: 'about / README.md' },
-  { id: 'projects', label: 'Projects', path: 'projects/', description: 'Browse Dairix and SmartTrace.', eyebrow: 'projects / index' },
+  { id: 'projects', label: 'Projects', path: 'projects/', description: 'Browse Dairix, SmartTrace, and NovaSync.', eyebrow: 'projects / index' },
   { id: 'skills', label: 'Skills & stack', path: 'skills/stack.json', description: 'Languages, frameworks, infrastructure, and tools.', eyebrow: 'skills / stack.json' },
-  { id: 'resume', label: 'Resume', path: 'resume/Muneeb.pdf', description: 'Resume download placeholder until a verified document is added.', eyebrow: 'resume / Muneeb.pdf' },
+  { id: 'resume', label: 'Resume', path: 'resume/Muneeb.pdf', description: 'Download the verified resume document.', eyebrow: 'resume / Muneeb.pdf' },
   { id: 'contact', label: 'Contact', path: 'contact/README.md', description: 'Find the verified ways to get in touch.', eyebrow: 'contact / README.md' },
 ]
 
-export const commandItems: CommandItem[] = navigationItems.map((item) => ({ ...item, keywords: [item.label, item.path, item.description] }))
+export const commandItems: CommandItem[] = [
+  ...navigationItems.map((item) => ({ ...item, keywords: [item.label, item.path, item.description] })),
+  { id: 'projects' as const, label: 'Dairix', path: 'projects/dairix/README.md', description: 'Dairy subscription & delivery coordination system.', eyebrow: 'projects / dairix', keywords: ['dairix', 'dairy', 'delivery', 'projects'] },
+  { id: 'projects' as const, label: 'SmartTrace', path: 'projects/smarttrace/README.md', description: 'Pharmaceutical anti-counterfeit & serialization tracking.', eyebrow: 'projects / smarttrace', keywords: ['smarttrace', 'pharma', 'security', 'projects'] },
+  { id: 'projects' as const, label: 'NovaSync', path: 'projects/novasync/README.md', description: 'Expense splitting & debt minimization platform.', eyebrow: 'projects / novasync', keywords: ['novasync', 'expense', 'splitting', 'debts', 'finance', 'projects'] },
+]
 
 export const fileTree: FolderNode = {
-  type: 'folder', path: '', label: 'muneeb.dev', children: [
+  type: 'folder', path: '', label: 'dangerousEnigma.dev', children: [
     {
       type: 'folder', path: 'about', label: 'about', children: [
         { type: 'file', path: 'about/README.md', label: 'README.md', view: 'about', description: identity.tagline, content: `${identity.name}\n\n${identity.tagline}\n\n${identity.about}` },
@@ -26,11 +31,19 @@ export const fileTree: FolderNode = {
         {
           type: 'folder', path: 'projects/dairix', label: 'dairix', children: [
             { type: 'file', path: 'projects/dairix/README.md', label: 'README.md', view: 'projects', description: 'Dairix introduction and technical overview.', content: projectDocumentation.dairix.readme },
+            { type: 'file', path: 'projects/dairix/dairix.png', label: 'dairix.png', view: 'projects', description: 'Dairix project preview screenshot.', content: '[Image preview: dairix.png]' },
           ],
         },
         {
           type: 'folder', path: 'projects/smarttrace', label: 'smarttrace', children: [
             { type: 'file', path: 'projects/smarttrace/README.md', label: 'README.md', view: 'projects', description: 'SmartTrace introduction and technical overview.', content: projectDocumentation.smarttrace.readme },
+            { type: 'file', path: 'projects/smarttrace/smarttrace.png', label: 'smarttrace.png', view: 'projects', description: 'SmartTrace project preview screenshot.', content: '[Image preview: smarttrace.png]' },
+          ],
+        },
+        {
+          type: 'folder', path: 'projects/novasync', label: 'novasync', children: [
+            { type: 'file', path: 'projects/novasync/README.md', label: 'README.md', view: 'projects', description: 'NovaSync introduction and technical overview.', content: projectDocumentation.novasync.readme },
+            { type: 'file', path: 'projects/novasync/novasync.png', label: 'novasync.png', view: 'projects', description: 'NovaSync project preview screenshot.', content: '[Image preview: novasync.png]' },
           ],
         },
       ],
@@ -42,7 +55,7 @@ export const fileTree: FolderNode = {
     },
     {
       type: 'folder', path: 'resume', label: 'resume', children: [
-        { type: 'file', path: 'resume/Muneeb.pdf', label: 'Muneeb.pdf', view: 'resume', description: 'Resume destination is not configured yet.', content: 'Resume destination is not configured yet.' },
+        { type: 'file', path: 'resume/Muneeb.pdf', label: 'Muneeb.pdf', view: 'resume', description: 'Verified resume download link.', content: 'Resume link: https://drive.google.com/drive/folders/1hqVxV-c_J_UU1qGBtN0P00X4yLdZ31z7?usp=sharing' },
       ],
     },
     {

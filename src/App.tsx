@@ -204,6 +204,10 @@ function App() {
       navigateToDirectory('projects')
       return
     }
+    if (['dairix', 'smarttrace', 'novasync'].includes(normalized)) {
+      navigateToDirectory(`projects/${normalized}`)
+      return
+    }
     if (normalized === 'about') {
       navigateToDirectory('about')
       return
@@ -302,7 +306,12 @@ function App() {
               {activeView === 'home' ? (
                 <HomeScreen />
               ) : (
-                <DetailScreen item={activeItem} activePath={activePath} onBack={() => { setActiveView('home'); setActivePath(''); setSelectedPath('') }} />
+                <DetailScreen
+                  item={activeItem}
+                  activePath={activePath}
+                  onBack={() => { setActiveView('home'); setActivePath(''); setSelectedPath('') }}
+                  onNavigateDirectory={navigateToDirectory}
+                />
               )}
             </div>
             <div className="terminal-dock">
@@ -335,7 +344,7 @@ function HomeScreen() {
     <div className="home-screen">
       <div className="home-intro">
         <div className="signal-line"><span className="signal-mark">◒</span> workspace mounted / 06 routes available</div>
-        <p className="eyebrow">muneeb.dev / workspace</p>
+        <p className="eyebrow">dangerousEnigma.dev / workspace</p>
         <h1>The workspace<br /><span>is ready.</span></h1>
         <p className="home-lede">Use the filesystem, command prompt, or palette to inspect the system and move between routes.</p>
       </div>
@@ -399,9 +408,9 @@ function WorkspaceCommandBar({ onRunCommand }: { onRunCommand: (command: string)
   )
 }
 
-function DetailScreen({ item, activePath, onBack }: { item: ReturnType<typeof findNavigationItem>; activePath: string; onBack: () => void }) {
-  const projectKey = activePath.split('/')[1]
-  const project = projectKey && projectKey in projectDetails ? projectDetails[projectKey as ProjectKey] : undefined
+function DetailScreen({ item, activePath, onBack, onNavigateDirectory }: { item: ReturnType<typeof findNavigationItem>; activePath: string; onBack: () => void; onNavigateDirectory: (path: string) => void }) {
+  const projectKey = activePath.split('/')[1] as ProjectKey | undefined
+  const project = projectKey && projectKey in projectDetails ? projectDetails[projectKey] : undefined
   return (
     <div className="detail-screen">
       <div className="detail-heading">
@@ -411,7 +420,11 @@ function DetailScreen({ item, activePath, onBack }: { item: ReturnType<typeof fi
       {item.id === 'about' ? (
         <AboutPanel />
       ) : item.id === 'projects' ? (
-        <ProjectDetail config={project} />
+        project ? (
+          <ProjectDetail config={project} currentKey={projectKey} onSelectProject={(key) => onNavigateDirectory(`projects/${key}`)} />
+        ) : (
+          <ProjectsIndex onSelectProject={(key) => onNavigateDirectory(`projects/${key}`)} />
+        )
       ) : item.id === 'contact' ? (
         <ContactPanel />
       ) : item.id === 'resume' ? (
@@ -484,13 +497,21 @@ function ContactPanel() {
   )
 }
 
-function ProjectDetail({ config }: { config?: { title: string; imageSource?: string; description: string } }) {
-  const title = config?.title ?? 'PROJECTS'
-  const imageSource = config?.imageSource
+function ProjectDetail({
+  config,
+  currentKey,
+  onSelectProject,
+}: {
+  config: { title: string; imageSource?: string; description: string }
+  currentKey?: ProjectKey
+  onSelectProject?: (key: ProjectKey) => void
+}) {
+  const title = config.title
+  const imageSource = config.imageSource
   return (
     <div className="project-detail">
       <TerminalHeading>{title}</TerminalHeading>
-      <p className="project-detail-description">{config?.description ?? 'Project description will be added here.'}</p>
+      <p className="project-detail-description">{config.description}</p>
       {imageSource ? (
         <img className="project-image-placeholder" src={imageSource} alt={`${title} project preview`} />
       ) : (
@@ -498,6 +519,56 @@ function ProjectDetail({ config }: { config?: { title: string; imageSource?: str
           <span>PROJECT IMAGE<br /><small>Replace with project screenshot</small></span>
         </div>
       )}
+      {onSelectProject && (
+        <div className="project-switcher" aria-label="Switch project">
+          {(Object.keys(projectDetails) as ProjectKey[]).map((key) => {
+            const isCurrent = key === currentKey
+            return (
+              <button
+                key={key}
+                type="button"
+                className={`project-switch-button ${isCurrent ? 'is-active' : ''}`}
+                onClick={() => onSelectProject(key)}
+              >
+                {projectDetails[key].title}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ProjectsIndex({ onSelectProject }: { onSelectProject: (key: ProjectKey) => void }) {
+  const keys = Object.keys(projectDetails) as ProjectKey[]
+  return (
+    <div className="projects-index">
+      <TerminalHeading>PROJECTS</TerminalHeading>
+      <p className="detail-lede">Select a project directory to inspect its documentation and preview.</p>
+      <div className="projects-grid">
+        {keys.map((key) => {
+          const config = projectDetails[key]
+          return (
+            <button
+              key={key}
+              type="button"
+              className="project-card"
+              onClick={() => onSelectProject(key)}
+            >
+              {config.imageSource && (
+                <img className="project-card-thumb" src={config.imageSource} alt={`${config.title} thumbnail`} />
+              )}
+              <div className="project-card-header">
+                <span className="project-card-path">~/projects/{key}/</span>
+                <span className="project-card-action">inspect →</span>
+              </div>
+              <h3 className="project-card-title">{config.title}</h3>
+              <p className="project-card-desc">{config.description}</p>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

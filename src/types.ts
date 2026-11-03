@@ -1,6 +1,6 @@
 export type ViewId = 'home' | 'about' | 'projects' | 'skills' | 'resume' | 'contact'
 
-export type ProjectKey = 'dairix' | 'smarttrace'
+export type ProjectKey = 'dairix' | 'smarttrace' | 'novasync'
 
 export type ProjectDetailConfig = {
   title: string
