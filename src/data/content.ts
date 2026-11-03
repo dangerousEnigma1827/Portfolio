@@ -19,12 +19,12 @@ export const projectDetails: Record<ProjectKey, ProjectDetailConfig> = {
   dairix: {
     title: 'DAIRIX',
     imageSource: `${import.meta.env.BASE_URL}dairix.png`,
-    description: 'A dairy management platform designed to streamline customer subscriptions, recurring deliveries, and delivery operations through a unified system.',
+    description: 'A dairy platform to coordinate customer subscriptions, recurring deliveries, and operations.',
   },
   smarttrace: {
     title: 'SMARTTRACE',
     imageSource: `${import.meta.env.BASE_URL}smarttrace.png`,
-    description: 'A pharmaceutical anti-counterfeit and traceability platform designed to verify product authenticity and detect duplicate or tampered serializations.',
+    description: 'A pharmaceutical anti-counterfeit platform to verify authenticity and detect duplicate serials.',
   },
   novasync: {
     title: 'NOVASYNC',
