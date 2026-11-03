@@ -23,6 +23,7 @@ import { BootScreen } from './components/BootScreen'
 import { CommandPalette } from './components/CommandPalette'
 import { CustomCursor } from './components/CustomCursor'
 import { FileTree } from './components/FileTree'
+import { ImageLightbox } from './components/ImageLightbox'
 import { TerminalEntry } from './components/TerminalEntry'
 import { TerminalShell } from './components/TerminalShell'
 import {
@@ -55,6 +56,7 @@ function App() {
   useModalFocus(drawerOpen, explorerRef, () => setExplorerOpen(false))
   const [mode, setMode] = useState<'entry' | 'workspace'>('entry')
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [lightboxProject, setLightboxProject] = useState<ProjectKey | null>(null)
   const [activeView, setActiveView] = useState<ViewId>('about')
   const [activePath, setActivePath] = useState('about/')
   const [selectedPath, setSelectedPath] = useState('about/README.md')
@@ -295,13 +297,13 @@ function App() {
         fullscreenSupported={fullscreenSupported}
         explorerOpen={drawerOpen}
         onToggleExplorer={() => setExplorerOpen((open) => !open)}
-        modalOpen={drawerOpen || paletteOpen}
+        modalOpen={drawerOpen || paletteOpen || Boolean(lightboxProject)}
       >
         <div className="shell-body">
           {drawerOpen && <div className="explorer-backdrop" onClick={() => setExplorerOpen(false)} aria-hidden="true" />}
           <aside ref={explorerRef} id="portfolio-explorer" className={`sidebar ${drawerOpen ? 'is-open' : ''}`} aria-label="Portfolio file explorer"
             role={drawerOpen ? 'dialog' : undefined} aria-modal={drawerOpen ? true : undefined}
-            inert={paletteOpen || (compact && !drawerOpen)}>
+            inert={paletteOpen || Boolean(lightboxProject) || (compact && !drawerOpen)}>
             <div className="sidebar-heading">
               <span className="eyebrow">workspace</span>
               <span className="live-dot" aria-label="online" />
@@ -318,7 +320,7 @@ function App() {
             </div>
           </aside>
 
-          <section className="terminal-content" inert={drawerOpen || paletteOpen}>
+          <section className="terminal-content" inert={drawerOpen || paletteOpen || Boolean(lightboxProject)}>
             <div className="breadcrumb"><span>~/</span>{activePath}</div>
             <div className="view-stage" tabIndex={0} aria-label="Portfolio content">
               {activeView === 'home' ? (
@@ -329,6 +331,7 @@ function App() {
                   activePath={activePath}
                   onBack={() => { setActiveView('home'); setActivePath(''); setSelectedPath('') }}
                   onNavigateDirectory={navigateToDirectory}
+                  onEnlargeProject={(key) => setLightboxProject(key)}
                 />
               )}
             </div>
@@ -338,7 +341,7 @@ function App() {
             </div>
           </section>
         </div>
-        <footer className="terminal-footer" inert={drawerOpen || paletteOpen}>
+        <footer className="terminal-footer" inert={drawerOpen || paletteOpen || Boolean(lightboxProject)}>
           <details className="shortcut-help" open={!compact}>
             <summary>Keyboard shortcuts</summary>
             <div className="footer-shortcuts">
@@ -353,6 +356,29 @@ function App() {
         </footer>
       </TerminalShell>
       {paletteOpen && <CommandPalette items={commandItems} onSelect={navigateTo} onClose={() => setPaletteOpen(false)} />}
+      {lightboxProject && projectDetails[lightboxProject]?.imageSource && (
+        <ImageLightbox
+          src={projectDetails[lightboxProject].imageSource!}
+          alt={`${projectDetails[lightboxProject].title} enlarged preview`}
+          title={projectDetails[lightboxProject].title}
+          projectKey={lightboxProject}
+          onClose={() => setLightboxProject(null)}
+          onPrev={() => {
+            const keys = Object.keys(projectDetails) as ProjectKey[]
+            const idx = keys.indexOf(lightboxProject)
+            const prev = keys[(idx - 1 + keys.length) % keys.length]
+            setLightboxProject(prev)
+            navigateToDirectory(`projects/${prev}`)
+          }}
+          onNext={() => {
+            const keys = Object.keys(projectDetails) as ProjectKey[]
+            const idx = keys.indexOf(lightboxProject)
+            const next = keys[(idx + 1) % keys.length]
+            setLightboxProject(next)
+            navigateToDirectory(`projects/${next}`)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -426,7 +452,19 @@ function WorkspaceCommandBar({ onRunCommand }: { onRunCommand: (command: string)
   )
 }
 
-function DetailScreen({ item, activePath, onBack, onNavigateDirectory }: { item: ReturnType<typeof findNavigationItem>; activePath: string; onBack: () => void; onNavigateDirectory: (path: string) => void }) {
+function DetailScreen({
+  item,
+  activePath,
+  onBack,
+  onNavigateDirectory,
+  onEnlargeProject,
+}: {
+  item: ReturnType<typeof findNavigationItem>
+  activePath: string
+  onBack: () => void
+  onNavigateDirectory: (path: string) => void
+  onEnlargeProject: (key: ProjectKey) => void
+}) {
   const projectKey = activePath.split('/')[1] as ProjectKey | undefined
   const project = projectKey && projectKey in projectDetails ? projectDetails[projectKey] : undefined
   return (
@@ -439,7 +477,12 @@ function DetailScreen({ item, activePath, onBack, onNavigateDirectory }: { item:
         <AboutPanel />
       ) : item.id === 'projects' ? (
         project ? (
-          <ProjectDetail config={project} currentKey={projectKey} onSelectProject={(key) => onNavigateDirectory(`projects/${key}`)} />
+          <ProjectDetail
+            config={project}
+            currentKey={projectKey}
+            onSelectProject={(key) => onNavigateDirectory(`projects/${key}`)}
+            onEnlarge={onEnlargeProject}
+          />
         ) : (
           <ProjectsIndex onSelectProject={(key) => onNavigateDirectory(`projects/${key}`)} />
         )
@@ -515,11 +558,31 @@ function ContactPanel() {
   )
 }
 
-function ProjectImage({ src, alt }: { src: string; alt: string }) {
+function ProjectImage({
+  src,
+  alt,
+  onEnlarge,
+}: {
+  src: string
+  alt: string
+  onEnlarge?: () => void
+}) {
   const [loaded, setLoaded] = useState(false)
 
   return (
-    <div className="project-image-box">
+    <div
+      className="project-image-box"
+      onClick={onEnlarge}
+      role={onEnlarge ? 'button' : undefined}
+      tabIndex={onEnlarge ? 0 : undefined}
+      aria-label={onEnlarge ? `${alt} (Click to enlarge)` : undefined}
+      onKeyDown={(event) => {
+        if (onEnlarge && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault()
+          onEnlarge()
+        }
+      }}
+    >
       {!loaded && (
         <div className="project-image-skeleton" aria-hidden="true">
           <span className="loading-pip" />
@@ -535,7 +598,68 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
         decoding="async"
         onLoad={() => setLoaded(true)}
       />
+      {loaded && onEnlarge && (
+        <span className="zoom-hint" aria-hidden="true">
+          <span>⤢</span> Click to enlarge
+        </span>
+      )}
     </div>
+  )
+}
+
+function ProjectNav({
+  currentKey,
+  onSelectProject,
+}: {
+  currentKey?: ProjectKey
+  onSelectProject: (key: ProjectKey) => void
+}) {
+  const keys = Object.keys(projectDetails) as ProjectKey[]
+  const currentIndex = currentKey ? keys.indexOf(currentKey) : 0
+  const prevKey = keys[(currentIndex - 1 + keys.length) % keys.length]
+  const nextKey = keys[(currentIndex + 1) % keys.length]
+
+  return (
+    <nav className="project-nav-bar" aria-label="Project switcher">
+      <button
+        type="button"
+        className="project-nav-step"
+        onClick={() => onSelectProject(prevKey)}
+        title={`Previous: ${projectDetails[prevKey].title}`}
+        aria-label="Previous project"
+      >
+        <span aria-hidden="true">◀</span>
+      </button>
+
+      <div className="project-nav-track" role="tablist">
+        {keys.map((key) => {
+          const isCurrent = key === currentKey
+          return (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={isCurrent}
+              className={`project-nav-pill ${isCurrent ? 'is-active' : ''}`}
+              onClick={() => onSelectProject(key)}
+            >
+              <span className="nav-pip" aria-hidden="true">{isCurrent ? '●' : '○'}</span>
+              <span>{projectDetails[key].title}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      <button
+        type="button"
+        className="project-nav-step"
+        onClick={() => onSelectProject(nextKey)}
+        title={`Next: ${projectDetails[nextKey].title}`}
+        aria-label="Next project"
+      >
+        <span aria-hidden="true">▶</span>
+      </button>
+    </nav>
   )
 }
 
@@ -543,40 +667,35 @@ function ProjectDetail({
   config,
   currentKey,
   onSelectProject,
+  onEnlarge,
 }: {
   config: { title: string; imageSource?: string; description: string }
   currentKey?: ProjectKey
   onSelectProject?: (key: ProjectKey) => void
+  onEnlarge?: (key: ProjectKey) => void
 }) {
   const title = config.title
   const imageSource = config.imageSource
   return (
     <div className="project-detail">
-      <TerminalHeading>{title}</TerminalHeading>
-      <p className="project-detail-description">{config.description}</p>
+      <div className="project-detail-header">
+        <TerminalHeading>{title}</TerminalHeading>
+        <p className="project-detail-description">{config.description}</p>
+      </div>
       {imageSource ? (
-        <ProjectImage key={imageSource} src={imageSource} alt={`${title} project preview`} />
+        <ProjectImage
+          key={imageSource}
+          src={imageSource}
+          alt={`${title} project preview`}
+          onEnlarge={currentKey && onEnlarge ? () => onEnlarge(currentKey) : undefined}
+        />
       ) : (
         <div className="project-image-box" role="img" aria-label={`${title} project image placeholder`}>
           <span>PROJECT IMAGE<br /><small>Replace with project screenshot</small></span>
         </div>
       )}
       {onSelectProject && (
-        <div className="project-switcher" aria-label="Switch project">
-          {(Object.keys(projectDetails) as ProjectKey[]).map((key) => {
-            const isCurrent = key === currentKey
-            return (
-              <button
-                key={key}
-                type="button"
-                className={`project-switch-button ${isCurrent ? 'is-active' : ''}`}
-                onClick={() => onSelectProject(key)}
-              >
-                {projectDetails[key].title}
-              </button>
-            )
-          })}
-        </div>
+        <ProjectNav currentKey={currentKey} onSelectProject={onSelectProject} />
       )}
     </div>
   )
