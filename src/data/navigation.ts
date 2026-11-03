@@ -31,19 +31,16 @@ export const fileTree: FolderNode = {
         {
           type: 'folder', path: 'projects/dairix', label: 'dairix', children: [
             { type: 'file', path: 'projects/dairix/README.md', label: 'README.md', view: 'projects', description: 'Dairix introduction and technical overview.', content: projectDocumentation.dairix.readme },
-            { type: 'file', path: 'projects/dairix/dairix.png', label: 'dairix.png', view: 'projects', description: 'Dairix project preview screenshot.', content: '[Image preview: dairix.png]' },
           ],
         },
         {
           type: 'folder', path: 'projects/smarttrace', label: 'smarttrace', children: [
             { type: 'file', path: 'projects/smarttrace/README.md', label: 'README.md', view: 'projects', description: 'SmartTrace introduction and technical overview.', content: projectDocumentation.smarttrace.readme },
-            { type: 'file', path: 'projects/smarttrace/smarttrace.png', label: 'smarttrace.png', view: 'projects', description: 'SmartTrace project preview screenshot.', content: '[Image preview: smarttrace.png]' },
           ],
         },
         {
           type: 'folder', path: 'projects/novasync', label: 'novasync', children: [
             { type: 'file', path: 'projects/novasync/README.md', label: 'README.md', view: 'projects', description: 'NovaSync introduction and technical overview.', content: projectDocumentation.novasync.readme },
-            { type: 'file', path: 'projects/novasync/novasync.png', label: 'novasync.png', view: 'projects', description: 'NovaSync project preview screenshot.', content: '[Image preview: novasync.png]' },
           ],
         },
       ],

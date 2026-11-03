@@ -183,7 +183,12 @@ h1 span { color: var(--text); }
 .back-button:hover { color: var(--text); }
 .project-detail { display: grid; justify-items: center; gap: 12px; width: min(660px, 100%); margin: 8px auto 0; }
 .project-detail h2 { margin: 0; }
-.project-image-placeholder { display: grid; place-items: center; width: min(560px, 100%); width: min(560px, 100%, max(160px, calc((100cqh - 190px) * 16 / 9))); aspect-ratio: 16 / 9; object-fit: contain; border: 1px solid var(--line-strong); border-radius: 4px; background: #030403; color: var(--muted); font-family: var(--font-pixel); font-size: clamp(9px, 1.2vw, 12px); letter-spacing: .05em; }
+.project-image-box { position: relative; display: grid; place-items: center; width: min(560px, 100%); width: min(560px, 100%, max(160px, calc((100cqh - 190px) * 16 / 9))); aspect-ratio: 16 / 9; border: 1px solid var(--line-strong); border-radius: 4px; background: #030403; overflow: hidden; }
+.project-image-skeleton { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--subtle); font-family: var(--font-pixel); font-size: 10px; letter-spacing: .06em; background: #030403; z-index: 1; }
+.loading-pip { display: inline-block; width: 6px; height: 6px; background: var(--mint-strong); border-radius: 50%; animation: indicator-flicker 1.5s steps(2, end) infinite; }
+.project-image-placeholder { display: block; width: 100%; height: 100%; object-fit: contain; border: 0; background: transparent; color: var(--muted); font-family: var(--font-pixel); font-size: clamp(9px, 1.2vw, 12px); letter-spacing: .05em; transition: opacity .15s ease-in; }
+.project-image-placeholder.is-loading { opacity: 0; }
+.project-image-placeholder.is-loaded { opacity: 1; }
 .project-image-placeholder small { display: inline-block; margin-top: 10px; color: var(--subtle); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0; }
 .project-description-placeholder { width: min(52ch, 100%); color: var(--muted); font-size: 14px; line-height: 1.6; text-align: center; text-wrap: pretty; }
 .project-detail-description { width: min(52ch, 100%); color: var(--muted); font-size: 14px; line-height: 1.6; text-align: center; text-wrap: pretty; }

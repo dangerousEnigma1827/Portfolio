@@ -65,6 +65,24 @@ function App() {
   const files = useMemo(() => flattenFiles(fileTree), [])
 
   useEffect(() => {
+    // Dynamic favicon to bypass stale browser caches
+    const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="14" fill="#030503"/><rect x="20" y="6" width="24" height="10" rx="2" fill="#6f786f"/><rect x="6" y="20" width="10" height="24" rx="2" fill="#9cffb6"/><rect x="34" y="20" width="10" height="38" rx="2" fill="#62e985"/><rect x="48" y="34" width="10" height="10" rx="2" fill="#a2aaa3"/></svg>`
+    const encoded = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`
+    const links = document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']")
+    links.forEach((link) => {
+      link.href = encoded
+    })
+
+    // Preload project preview images in browser memory for instant switching
+    Object.values(projectDetails).forEach((project) => {
+      if (project.imageSource) {
+        const img = new Image()
+        img.src = project.imageSource
+      }
+    })
+  }, [])
+
+  useEffect(() => {
     const root = shellRef.current
     const supported = Boolean(document.fullscreenEnabled && root?.requestFullscreen)
     setFullscreenSupported(supported)
@@ -497,6 +515,30 @@ function ContactPanel() {
   )
 }
 
+function ProjectImage({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <div className="project-image-box">
+      {!loaded && (
+        <div className="project-image-skeleton" aria-hidden="true">
+          <span className="loading-pip" />
+          <span>loading asset...</span>
+        </div>
+      )}
+      <img
+        key={src}
+        className={`project-image-placeholder ${loaded ? 'is-loaded' : 'is-loading'}`}
+        src={src}
+        alt={alt}
+        loading="eager"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  )
+}
+
 function ProjectDetail({
   config,
   currentKey,
@@ -513,9 +555,9 @@ function ProjectDetail({
       <TerminalHeading>{title}</TerminalHeading>
       <p className="project-detail-description">{config.description}</p>
       {imageSource ? (
-        <img className="project-image-placeholder" src={imageSource} alt={`${title} project preview`} />
+        <ProjectImage key={imageSource} src={imageSource} alt={`${title} project preview`} />
       ) : (
-        <div className="project-image-placeholder" role="img" aria-label={`${title} project image placeholder`}>
+        <div className="project-image-box" role="img" aria-label={`${title} project image placeholder`}>
           <span>PROJECT IMAGE<br /><small>Replace with project screenshot</small></span>
         </div>
       )}

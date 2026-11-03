@@ -29,7 +29,7 @@ export const projectDetails: Record<ProjectKey, ProjectDetailConfig> = {
   novasync: {
     title: 'NOVASYNC',
     imageSource: `${import.meta.env.BASE_URL}novasync.png`,
-    description: 'An expense splitting platform that helps groups track shared spending, split costs, and automatically compute the minimal number of transactions needed to balance debts.',
+    description: 'An expense splitting platform to track shared group spending and minimize debt settlements.',
   },
 }
 
